@@ -1,17 +1,20 @@
 package com.base.net_lib.request
 
-import android.util.Log
+import com.base.net_lib.callback.JsonCallback
+import com.base.net_lib.log.HttpLog
 import com.base.net_lib.parameter.HeaderParameter
 import com.base.net_lib.parameter.HttpParameter
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import okhttp3.*
 import java.io.IOException
-import java.net.URL
+import java.lang.reflect.ParameterizedType
 import java.util.concurrent.ConcurrentHashMap
 
 /**
  * 设置请求参数以及执行请求的地方
  */
-class NetRequest<T> {
+class NetRequest<T> : BaseNetRequest<T>{
     private var mRequest: Request.Builder? = null
     private var mUrl: String = ""
     private var mHttpParameter: HttpParameter = HttpParameter()
@@ -93,16 +96,27 @@ class NetRequest<T> {
     /**
      * 异步请求
      */
-    fun execute(callback: (result: T) -> Unit) {
+    fun execute(/*callback: (result: T?) -> Unit*/callback:JsonCallback<T>) {
         val request = getRequest()
         request?.let {
             mOkHttpClient?.newCall(it)?.enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
-                    Log.e("日志","请求失败：${e.message}")
+                    HttpLog.response(call, e)
                 }
 
                 override fun onResponse(call: Call, response: Response) {
-                    Log.e("日志","请求成功：${response.body?.string()}")
+                    val reader = response.body?.string()
+                    try {
+                        var data: T? = null
+                        val gson = Gson()
+                        //val genType = callback::class.java.genericInterfaces[0]
+                        val type = this@NetRequest::class.java.genericSuperclass
+                        //data = gson.fromJson(reader, type)
+                        //callback.invoke(data)
+                        HttpLog.response(call.request(), response, reader ?: "")
+                    } catch (e: Exception) {
+                        HttpLog.response(call.request(), response, reader ?: "", e)
+                    }
                 }
             })
         }
@@ -111,7 +125,7 @@ class NetRequest<T> {
     /**
      * 同步请求
      */
-    fun <T> enqueue():String?{
+    fun enqueue():String?{
         val request = getRequest()
         request?.let {
             return mOkHttpClient?.newCall(it)?.execute()?.body?.string()?:""

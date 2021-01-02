@@ -1,8 +1,8 @@
 package com.base.net_lib.interceptor
 
 import android.text.TextUtils
-import android.util.Log
-import com.base.net_lib.log.NetLog
+import com.base.net_lib.log.HttpLog
+import com.base.net_lib.log.L
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -12,19 +12,14 @@ import okhttp3.Response
 class NetInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        val response = chain.proceed(request)
         val header = request.headers
-        val url = request.url.toUrl()
-        val headerStringBuffer = StringBuffer("\n")
-        header.forEach(){
-            headerStringBuffer.append(it.first+":"+it.second+"\n")
-        }
-        //Log.e("日志","请求头：${headerStringBuffer.toString()}")
-        NetLog.e("日志","请求头：${headerStringBuffer.toString()}")
-        NetLog.e("日志","请求地址：${url}")
+        HttpLog.request(request,header)
+        val response = chain.proceed(request)
+        //response?.body?.close()
         //Log.e("日志", "请求地址：\n$url")
         return response.newBuilder().build()
-
     }
+
+
 
 }
