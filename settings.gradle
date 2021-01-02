@@ -1,0 +1,4 @@
+include ':net_lib'
+include ':frame'
+include ':app'
+rootProject.name = "AppFrame"

@@ -1,0 +1,5 @@
+/build
+frame/build
+net_lib/build
+/.gradle
+/.idea
