@@ -13,8 +13,8 @@ interface BaseNetRequest<T> {
     fun header(key: String, value: Any): NetRequest<T>
     fun header(header: HeaderParameter): NetRequest<T>
     fun header(headerMap: ConcurrentHashMap<String, Any>): NetRequest<T>
-    fun execute(/*callback: (result: T?) -> Unit*/callback:JsonCallback<T>)
-    fun enqueue():String?
+    fun execute(callback: JsonCallback<T>)
+    fun enqueue(): T?
     fun configGetRequest(): Request.Builder
-    fun getRequest():Request?
+    fun getRequest(): Request?
 }

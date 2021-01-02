@@ -15,16 +15,7 @@ class TestModel : BaseViewModel() {
     fun requestTest() {
         doUILaunch({
             val a = doIOAsyncAndAwait {
-                NetHttp.get<String>("http://114.116.149.238:8080/getFestival").execute(object:JsonCallback<String>{
-                    override fun onSuccess(result: String?) {
-
-                    }
-
-                    override fun onError(msg: String) {
-
-                    }
-
-                })
+                NetHttp.get<String>("http://114.116.149.238:8080/getFestival").enqueue()
             }
         }, CoroutineExceptionHandler() { _, e ->
             Log.e("日志", "错误ii：${e.message}")

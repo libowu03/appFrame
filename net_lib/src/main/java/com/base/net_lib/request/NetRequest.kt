@@ -1,11 +1,11 @@
 package com.base.net_lib.request
 
+import com.base.net_lib.callback.BaseNetRequest
 import com.base.net_lib.callback.JsonCallback
 import com.base.net_lib.log.HttpLog
 import com.base.net_lib.parameter.HeaderParameter
 import com.base.net_lib.parameter.HttpParameter
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import okhttp3.*
 import java.io.IOException
 import java.lang.reflect.ParameterizedType
@@ -42,7 +42,7 @@ class NetRequest<T> : BaseNetRequest<T>{
      * @param key 参数的key
      * @param value 请求参数的值
      */
-    fun put(key: String, value: Any): NetRequest<T> {
+    override fun put(key: String, value: Any): NetRequest<T> {
         mHttpParameter.put(key, value)
         return this
     }
@@ -51,7 +51,7 @@ class NetRequest<T> : BaseNetRequest<T>{
      * 设置请求参数
      * @param parameter 请求参数
      */
-    fun put(parameter: HttpParameter): NetRequest<T> {
+    override fun put(parameter: HttpParameter): NetRequest<T> {
         mHttpParameter.put(parameter)
         return this
     }
@@ -60,7 +60,7 @@ class NetRequest<T> : BaseNetRequest<T>{
      * 通过map添加请求参数
      * @param parameterMap 请求参数
      */
-    fun put(parameterMap: ConcurrentHashMap<String, Any>): NetRequest<T> {
+    override fun put(parameterMap: ConcurrentHashMap<String, Any>): NetRequest<T> {
         mHttpParameter.put(parameterMap)
         return this
     }
@@ -70,7 +70,7 @@ class NetRequest<T> : BaseNetRequest<T>{
      * @param key 头部请求参数的key
      * @param value 头部请求参数的值
      */
-    fun header(key: String, value: Any): NetRequest<T> {
+    override fun header(key: String, value: Any): NetRequest<T> {
         mHeaderParameter.put(key, value)
         return this
     }
@@ -79,7 +79,7 @@ class NetRequest<T> : BaseNetRequest<T>{
      * 添加头部参数
      * @param header 头部请求参数
      */
-    fun header(header: HeaderParameter): NetRequest<T> {
+    override fun header(header: HeaderParameter): NetRequest<T> {
         mHeaderParameter.put(header)
         return this
     }
@@ -88,7 +88,7 @@ class NetRequest<T> : BaseNetRequest<T>{
      * 添加头部参数
      * @param header 头部请求参数
      */
-    fun header(headerMap: ConcurrentHashMap<String, Any>): NetRequest<T> {
+    override fun header(headerMap: ConcurrentHashMap<String, Any>): NetRequest<T> {
         mHeaderParameter.put(headerMap)
         return this
     }
@@ -96,25 +96,32 @@ class NetRequest<T> : BaseNetRequest<T>{
     /**
      * 异步请求
      */
-    fun execute(/*callback: (result: T?) -> Unit*/callback:JsonCallback<T>) {
+    override fun execute(callback: JsonCallback<T>) {
         val request = getRequest()
         request?.let {
             mOkHttpClient?.newCall(it)?.enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     HttpLog.response(call, e)
+                    callback.onError(e.localizedMessage)
                 }
 
                 override fun onResponse(call: Call, response: Response) {
                     val reader = response.body?.string()
                     try {
-                        var data: T? = null
+                        var data: T?
                         val gson = Gson()
-                        //val genType = callback::class.java.genericInterfaces[0]
-                        val type = this@NetRequest::class.java.genericSuperclass
-                        //data = gson.fromJson(reader, type)
-                        //callback.invoke(data)
+                        val genType = callback::class.java.genericInterfaces[0]
+                        val params = (genType as ParameterizedType).actualTypeArguments[0]
+                        val n = params.toString()
+                        if (n == "class java.lang.String"){
+                            callback.onSuccess(reader as T)
+                        }else{
+                            data = gson.fromJson(reader, params)
+                            callback.onSuccess(data)
+                        }
                         HttpLog.response(call.request(), response, reader ?: "")
                     } catch (e: Exception) {
+                        callback.onError(e.localizedMessage)
                         HttpLog.response(call.request(), response, reader ?: "", e)
                     }
                 }
@@ -125,10 +132,18 @@ class NetRequest<T> : BaseNetRequest<T>{
     /**
      * 同步请求
      */
-    fun enqueue():String?{
+    override fun enqueue():T?{
         val request = getRequest()
         request?.let {
-            return mOkHttpClient?.newCall(it)?.execute()?.body?.string()?:""
+            var data: T?
+            val gson = Gson()
+            val genType = javaClass.genericSuperclass
+            val params = (genType as ParameterizedType).actualTypeArguments[0]
+            val n = params.toString()
+
+            val result = mOkHttpClient?.newCall(it)?.execute()?.body?.string()?:""
+
+            return null
         }?:let {
             return null
         }
@@ -138,7 +153,7 @@ class NetRequest<T> : BaseNetRequest<T>{
      * 配置请求参数
      * @param url 请求地址
      */
-    private fun configGetRequest(): Request.Builder {
+    override fun configGetRequest(): Request.Builder {
         return Request.Builder()
 
     }
@@ -146,7 +161,7 @@ class NetRequest<T> : BaseNetRequest<T>{
     /**
      * 获取request
      */
-    private fun getRequest():Request?{
+    override fun getRequest():Request?{
         mUrl = mHttpParameter.configParameter(mUrl)
         mHeaderParameter.configHeaderParameter(mRequest)
         mRequest?.url(mUrl)
