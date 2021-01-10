@@ -19,20 +19,24 @@ import java.util.prefs.Preferences
  * 拦截器，用于拦截访问的请求，并通过日志形式输出在控制台
  */
 class NetInterceptor : Interceptor {
-    var cacheModel = TYPE_NONE
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val header = request.headers
-        HttpLog.request(request,header)
+        HttpLog.request(request, header)
         val response = chain.proceed(request)
-        if (response.cacheResponse != null){
-            L.i("日志","存在缓存")
+        return if (!TextUtils.isEmpty(request.header("Cache-Control"))) {
+            val reResponse = response.newBuilder()
+                .removeHeader("pragma")
+                .header("Cache-Control", request.header("Cache-Control") ?: "")
+                .build();
+            HttpLog.response(request, response, reResponse.peekBody(1024*1024).string())
+            reResponse
+        } else {
+            val body = response.peekBody(1024 * 1024)
+            HttpLog.response(request, response, body.string())
+            response.newBuilder().build()
         }
-        val body = response.peekBody(1024*1024)
-        HttpLog.response(request,response,body.string())
-        return response.newBuilder().build()
     }
-
 
 
 }

@@ -2,6 +2,8 @@ package com.frame.main.net
 
 import android.util.Log
 import com.base.net_lib.NetHttp
+import com.base.net_lib.constants.NetConstants
+import com.base.net_lib.constants.NetConstants.Code.NET_NO_NET
 import com.base.net_lib.log.L
 import com.base.net_lib.parameter.HeaderParameter
 import com.base.net_lib.parameter.HttpParameter
@@ -22,18 +24,18 @@ object NetManager {
         parameter: HttpParameter? = null,
         header: HeaderParameter? = null
     ) = suspendCoroutine<ResultData<T>> {
-        val response = NetHttp.get<String>(url).put(parameter).header(header).enqueue()
+        val response = NetHttp.get<String>(url).put(parameter).header(header).cacheTime(NetConstants.CacheModel.TYPE_ONE_HOUR).enqueue()
         try {
             val type = object : TypeToken<T>() {}.type
             //如果需要的类型是string类型的，直接输出
             if (type.toString().equals("class java.lang.String")){
-                it.resume(ResultData<T>(response?.body?.string() as T))
+                it.resume(ResultData<T>((response?.body?.string()?:"") as T))
             }else{
                 it.resume(ResultData(Gson().fromJson(response?.body?.charStream(), type)))
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            it.resume(ResultData<T>(null,response?.code?:-1,"",e.localizedMessage))
+            it.resume(ResultData<T>(null,response?.code?:NET_NO_NET,"网络请求失败",e.localizedMessage))
         }
     }
 

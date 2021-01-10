@@ -22,12 +22,11 @@ object NetHttp {
         // 缓存目录
 
         // 缓存目录
-        val file = File(Applications.context().cacheDir.path, "a_cache")
+        val file = File(Applications.context().cacheDir.path, "cache")
         // 缓存大小
         // 缓存大小
         val cacheSize = 10 * 1024 * 1024
         mOkHttpClient = OkHttpClient().newBuilder()
-            //.cache(Cache (Applications.context().cacheDir, 10240 * 1024))
             .connectTimeout(10, TimeUnit.SECONDS)
             .addInterceptor(NetInterceptor())
             .cache(Cache(file, cacheSize.toLong()))

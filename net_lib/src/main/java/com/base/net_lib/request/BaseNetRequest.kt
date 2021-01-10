@@ -3,6 +3,9 @@ package com.base.net_lib.request
 import com.base.net_lib.callback.BaseNetRequestInte
 import com.base.net_lib.callback.JsonCallback
 import com.base.net_lib.constants.NetConstants.CacheModel.TYPE_NONE
+import com.base.net_lib.constants.NetConstants.CacheModel.TYPE_ONE_HOUR
+import com.base.net_lib.constants.NetConstants.CacheModel.TYPE_ONLY_CACHE
+import com.base.net_lib.constants.NetConstants.Code.NET_NO_NET
 import com.base.net_lib.log.HttpLog
 import com.base.net_lib.parameter.HeaderParameter
 import com.base.net_lib.parameter.HttpParameter
@@ -17,22 +20,23 @@ import java.util.concurrent.TimeUnit
  * 基础请求，功能相当于get请求，不过对外一般使用NetGetRequest方法进行请求，而不是使用该类进行请求
  */
 open class BaseNetRequest<T> : BaseNetRequestInte<T> {
-    protected var mRequest: Request.Builder? = null
+    protected var mRequestBuilder: Request.Builder? = null
+    protected var mRequest:Request?=null
     protected var mUrl: String = ""
     protected var mHttpParameter: HttpParameter = HttpParameter()
     protected var mHeaderParameter: HeaderParameter = HeaderParameter()
     protected var mOkHttpClient: OkHttpClient? = null
-    protected var mCacheTime:Long = 0L
-    protected var mCacheControlBuilder:CacheControl.Builder?=null
+    protected var mCacheTime: Int = TYPE_NONE
+    protected var mCacheControlBuilder: CacheControl.Builder? = null
 
     constructor(url: String, okHttpClient: OkHttpClient?) {
         mUrl = url
         mOkHttpClient = okHttpClient
-        mRequest = configGetRequest()
+        mRequestBuilder = configGetRequestBuilder()
     }
 
     init {
-        mRequest = configGetRequest()
+        mRequestBuilder = configGetRequestBuilder()
     }
 
     /**
@@ -141,8 +145,19 @@ open class BaseNetRequest<T> : BaseNetRequestInte<T> {
     override fun enqueue(): Response? {
         val request = getRequest()
         request?.let {
-            //读取缓存，如果存在缓存，且缓存在有效期内，直接返回即可
-            return mOkHttpClient?.newCall(it)?.execute()
+            try {
+                //读取缓存，如果存在缓存，且缓存在有效期内，直接返回即可
+                return mOkHttpClient?.newCall(it)?.execute()
+            } catch (e: java.lang.Exception) {
+                val builder = Response.Builder()
+                builder.message(e.localizedMessage)
+                builder.code(NET_NO_NET)
+                mRequest?.let {
+                    builder.headers(it.headers)
+                    builder.request(it)
+                }
+                return builder.build()
+            }
         } ?: let {
             return null
         }
@@ -152,7 +167,7 @@ open class BaseNetRequest<T> : BaseNetRequestInte<T> {
      * 配置请求参数
      * @param url 请求地址
      */
-    override fun configGetRequest(): Request.Builder {
+    protected open fun configGetRequestBuilder(): Request.Builder {
         return Request.Builder()
 
     }
@@ -160,25 +175,33 @@ open class BaseNetRequest<T> : BaseNetRequestInte<T> {
     /**
      * 获取request
      */
-    override fun getRequest(): Request? {
+    protected open fun getRequest(): Request? {
         mUrl = mHttpParameter.configParameter(mUrl)
-        mHeaderParameter.configHeaderParameter(mRequest)
-        mRequest?.url(mUrl)
-        return mRequest?.url(mUrl)?.build()
+        mHeaderParameter.configHeaderParameter(mRequestBuilder)
+        mRequestBuilder?.url(mUrl)
+        mRequestBuilder?.cacheControl(createCacheControllerBuilder().build())
+        return mRequestBuilder?.url(mUrl)?.build()
     }
 
     /**
      * 缓存时间
+     * @param cacheTime 缓存有效期，单位秒
      */
-    override fun cacheTime(cacheTime: Long): BaseNetRequest<T> {
+    override fun cacheTime(cacheTime: Int): BaseNetRequest<T> {
         this.mCacheTime = cacheTime
-        mCacheControlBuilder?.maxAge(TYPE_NONE, TimeUnit.MILLISECONDS)
-        mCacheControlBuilder?.maxAge(TYPE_NONE, TimeUnit.MILLISECONDS)
+        if (cacheTime == TYPE_ONLY_CACHE) {
+            createCacheControllerBuilder().onlyIfCached()
+        } else {
+            createCacheControllerBuilder().maxStale(cacheTime, TimeUnit.SECONDS)
+            createCacheControllerBuilder().maxAge(cacheTime, TimeUnit.SECONDS)
+        }
+
+        //
         return this
     }
 
-    override fun createCacheControllerBuilder(): CacheControl.Builder {
-        if (mCacheControlBuilder == null){
+    protected open fun createCacheControllerBuilder(): CacheControl.Builder {
+        if (mCacheControlBuilder == null) {
             mCacheControlBuilder = CacheControl.Builder()
         }
         return mCacheControlBuilder!!

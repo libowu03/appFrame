@@ -20,8 +20,5 @@ interface BaseNetRequestInte<T> {
     fun header(headerMap: ConcurrentHashMap<String, Any>): BaseNetRequest<T>
     fun execute(callback: JsonCallback<T>)
     fun enqueue(): Response?
-    fun configGetRequest(): Request.Builder
-    fun getRequest(): Request?
-    fun cacheTime(cacheTime:Long): BaseNetRequest<T>
-    fun createCacheControllerBuilder():CacheControl.Builder
+    fun cacheTime(cacheTime:Int): BaseNetRequest<T>
 }
