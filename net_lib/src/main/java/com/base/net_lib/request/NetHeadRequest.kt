@@ -13,7 +13,7 @@ class NetHeadRequest<T>(url: String, okHttpClient: OkHttpClient?) :
     BaseNetHeadInterface<T> {
 
     override fun getRequest(): Request? {
-        mRequest?.head()
+        mRequestBuilder?.head()
         return super.getRequest()
     }
 }

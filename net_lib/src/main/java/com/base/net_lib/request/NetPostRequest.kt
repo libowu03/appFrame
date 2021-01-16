@@ -51,7 +51,7 @@ class NetPostRequest<T>(url: String, okHttpClient: OkHttpClient?) :
             L.e(NET_HTTP_ERROR, e.localizedMessage)
         }
         jsonStr?.let {
-            mRequest?.post(it.toRequestBody(jsonType))
+            mRequestBuilder?.post(it.toRequestBody(jsonType))
         }
         return this
     }
@@ -84,10 +84,10 @@ class NetPostRequest<T>(url: String, okHttpClient: OkHttpClient?) :
 
     override fun getRequest(): Request? {
         mUrl = mHttpParameter.configParameter(mUrl)
-        mHeaderParameter.configHeaderParameter(mRequest)
-        mRequest?.url(mUrl)
-        mRequest?.post(mForm.build())
-        mRequest?.post(mMultipartBody.build())
+        mHeaderParameter.configHeaderParameter(mRequestBuilder)
+        mRequestBuilder?.url(mUrl)
+        mRequestBuilder?.post(mForm.build())
+        mRequestBuilder?.post(mMultipartBody.build())
         return super.getRequest()
     }
 

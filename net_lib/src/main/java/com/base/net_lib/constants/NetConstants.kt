@@ -39,4 +39,16 @@ object NetConstants {
         const val TYPE_ONLY_CACHE = -1
     }
 
+    /**
+     * 下载状态
+     */
+    object DownloadState{
+        //下载中
+        const val STATE_DOING = 0
+        //下载成功
+        const val STATE_DONE = 1;
+        //下载失败
+        const val STATE_ERROR = -1
+    }
+
 }

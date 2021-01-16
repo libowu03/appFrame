@@ -1,17 +1,13 @@
-package com.frame.main.task;
+package com.frame.main;
 
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 
-
-import com.frame.main.callback.DownloadListener;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -21,8 +17,6 @@ public class DownLoadTask extends AsyncTask<String,Integer,Integer> {
     public static final int TYPE_FAILED = 1;
     public static final int TYPE_PAUSED = 2;
     public static final int TYPE_CANCELED = 3;
-
-
     private DownloadListener listener;
     private boolean isCanceled = false;
     private boolean isPaused = false;
