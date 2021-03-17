@@ -41,6 +41,7 @@ object HttpLog {
         val url = request.url.toUrl()
         val resultString = StringBuffer()
         val header = header(header)
+        resultString.append("\n请求类型：${request.method}")
         resultString.append("\n请求地址：${url}")
         if (header.isNotEmpty()){
             resultString.append("请 求 头：${header}")
@@ -68,6 +69,7 @@ object HttpLog {
         }
         if (result.isNotEmpty()) {
             resultBuffer.append("\n")
+                .append("请求类型：${request.method}\n")
                 .append("请求状态：${response.code}\n")
                 .append("请求地址：${url}\n")
                 .append(headerStr)

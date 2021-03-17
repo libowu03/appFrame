@@ -4,6 +4,7 @@ import com.base.net_lib.callback.BasePostInterface
 import com.base.net_lib.constants.NetConstants.LogTag.NET_HTTP_ERROR
 import com.base.net_lib.constants.NetConstants.LogTag.NET_HTTP_WARN
 import com.base.net_lib.log.L
+import com.base.net_lib.parameter.HttpParameter
 import com.google.gson.Gson
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -31,6 +32,8 @@ class NetPostRequest<T>(url: String, okHttpClient: OkHttpClient?) :
         }
         return this
     }
+
+
 
     /**
      * 上传json，如果是string类型，直接上传，如果是其他实体类 ,先转换成string类型的json
@@ -89,6 +92,18 @@ class NetPostRequest<T>(url: String, okHttpClient: OkHttpClient?) :
         mRequestBuilder?.post(mForm.build())
         mRequestBuilder?.post(mMultipartBody.build())
         return super.getRequest()
+    }
+
+    override fun form(http: HttpParameter?): NetPostRequest<T> {
+        http?.let {
+            val parameter = http.getParameterMap()
+            parameter.forEach {
+                if (it.value is String){
+                    mForm.add(it.key, it.value as String)
+                }
+            }
+        }
+        return this
     }
 
 }

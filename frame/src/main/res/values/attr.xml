@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="BaseTopbarView">
+        <!--view布局是否包含状态栏高度-->
+        <attr name="needStatusBarHeight" format="boolean" />
+        <!--只需要状态栏高度，其他的标题之类的内容不需要-->
+        <attr name="onlyNeedStatusHeight" format="boolean" />
+        <!--大标题-->
+        <attr name="topBarTitle" format="string" />
+        <!--左边第一个图标的图片-->
+        <attr name="leftOneImage" format="reference" />
+        <!--左边第二个图标旁边的文案-->
+        <attr name="leftText" format="string" />
+        <!--右边第二个图标旁边的文案-->
+        <attr name="rightText" format="string" />
+        <!--右边第一个图标的图片-->
+        <attr name="rightOneImage" format="reference" />
+        <!--是否需要左边第一张图片-->
+        <attr name="needLeftOneImage" format="boolean"/>
+        <!--是否需要右边第一张图片-->
+        <attr name="needRightOneImage" format="boolean"/>
+        <!--是否需要左边第一个文案-->
+        <attr name="needLeftOneText" format="boolean"/>
+        <!--是否需要右边第一个文案-->
+        <attr name="needRightOneText" format="boolean"/>
+        <!--标题颜色-->
+        <attr name="topBarTitleTextColor" format="color"/>
+        <!--左边第一个文案的字体颜色-->
+        <attr name="topBarLeftTextColor" format="color"/>
+        <!--右边第一个文案的字体颜色-->
+        <attr name="topBarRightTextColor" format="color"/>
+        <!--标题大小-->
+        <attr name="topBarTitleTextSize" format="dimension"/>
+        <!--左边文案大小-->
+        <attr name="topBarLeftTextSize" format="dimension"/>
+        <!--右边文案大小-->
+        <attr name="topBarRightTextSize" format="dimension"/>
+    </declare-styleable>
+
+</resources>

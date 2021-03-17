@@ -75,7 +75,7 @@ class HttpParameter {
         mParameterMap.clear()
     }
 
-    private fun getParameterMap():ConcurrentHashMap<String,Any>{
+    fun getParameterMap():ConcurrentHashMap<String,Any>{
         return mParameterMap
     }
 }

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/vStatusBar"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#00000000" />
+
+    <LinearLayout
+        android:id="@+id/vLlContentBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
+
+        <ImageView
+            android:id="@+id/vImageLeftOne"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:maxWidth="35dp"
+            android:maxHeight="35dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/frame_ic_back" />
+
+
+        <TextView
+            android:id="@+id/vTvLeftOne"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:textSize="15dp"
+            android:visibility="invisible"
+            tools:text="测试" />
+
+        <TextView
+            android:id="@+id/vTvCenter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="#3D3C43"
+            android:textSize="15dp"
+            tools:text="测试测试" />
+
+        <TextView
+            android:id="@+id/vTvRightOne"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:textSize="15dp"
+            android:visibility="invisible"
+            tools:text="测试" />
+
+        <ImageView
+            android:id="@+id/vImageRightOne"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="#909090"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,7 +1,5 @@
-package com.frame.main.uiExt
+package com.frame.main.utils
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
 import com.frame.main.bean.ResultData
 import kotlinx.coroutines.*
 import kotlin.coroutines.resume

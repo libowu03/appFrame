@@ -2,6 +2,7 @@ package com.base.net_lib.callback
 
 import com.base.net_lib.constants.NetConstants
 import com.base.net_lib.constants.NetConstants.NetType.NET_TYPE_JSON
+import com.base.net_lib.parameter.HttpParameter
 import com.base.net_lib.request.NetPostRequest
 import okhttp3.MultipartBody
 import java.io.File
@@ -14,6 +15,12 @@ interface BasePostInterface<T> {
      * 提交表单
      */
     fun form(key:String,value:String?):NetPostRequest<T>
+
+    /**
+     * 提交表单
+     */
+    fun form(http:HttpParameter?):NetPostRequest<T>
+
 
     /**
      * 上传json文件，如果是string类型，直接上传，如果是其他实体类 ,先转换成string类型的json

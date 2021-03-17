@@ -1,6 +1,5 @@
 package com.frame.main.viewModel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.frame.main.bean.ResultData

@@ -1,16 +1,14 @@
-package com.frame.main.uiExt
+package com.frame.main.ext
 
 import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
-import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
 import android.view.WindowManager
-import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import com.frame.main.constant.Constants
 import com.frame.main.utils.IntentHelper
@@ -138,4 +136,15 @@ fun Fragment.sendToActivity(
     requestCode: Int = -1
 ): IntentHelper.IntentBuilder {
     return IntentHelper.sendToActivity(context, clzzName, flag, requestCode)
+}
+
+//region 像素转换
+fun dp2px(dpValue: Float): Int {
+    return (0.5f + dpValue * Resources.getSystem().displayMetrics.density).toInt()
+}
+
+fun px2dp(px: Float): Int {
+    val scale = kotlin.math.max(Resources.getSystem().displayMetrics.density, 1f)
+    val dp = 0.5f + px / scale
+    return dp.toInt()
 }

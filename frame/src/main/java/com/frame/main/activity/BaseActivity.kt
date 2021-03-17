@@ -1,32 +1,48 @@
 package com.frame.main.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import com.frame.main.Config
-import com.frame.main.uiExt.setStatusBarColor
-import com.frame.main.uiExt.setStatusBarHidden
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModel
+import androidx.viewbinding.ViewBinding
+import com.frame.main.BR
+import com.frame.main.BaseActivityConfig
+import com.frame.main.ext.setStatusBarColor
+import com.frame.main.ext.setStatusBarHidden
+import java.lang.reflect.ParameterizedType
 
 
-abstract class BaseActivity : AppCompatActivity() {
-    private val mConfig = Config()
+abstract class BaseActivity<T:ViewBinding> : FragmentActivity() {
+    protected val viewBinding: T by lazy {
+        //使用反射得到viewbinding的class
+        val type = javaClass.genericSuperclass as ParameterizedType
+        val aClass = type.actualTypeArguments[0] as Class<*>
+        val method = aClass.getDeclaredMethod("inflate", LayoutInflater::class.java)
+        method.invoke(null, layoutInflater) as T
+    }
+    private val mConfig = BaseActivityConfig()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         config(mConfig)
         initConfig()
-        if (mConfig.enableDataBing){
-            val binding = DataBindingUtil.setContentView<ViewDataBinding>(this,setLayout())
-            binding.lifecycleOwner = this
-            //binding.setVariable(BR.vm,mConfig.viewModel)
-        }else{
-            setContentView(setLayout())
+        setContentView(viewBinding.root)
+        val binding = DataBindingUtil.bind<ViewDataBinding>(viewBinding.root)
+        binding?.lifecycleOwner = this
+        val viewModel = viewModelSetting()
+        viewModel?.let {
+            binding?.setVariable(BR.data,viewModel)
         }
         initView()
         initListener()
         initAdapter()
         initData()
+    }
+
+    open fun viewModelSetting():ViewModel?{
+        return null
     }
 
     /**
@@ -66,12 +82,8 @@ abstract class BaseActivity : AppCompatActivity() {
      * 配置基础信息,如果需要打开DataBinding，这里必须设置一个viewModel
      * 在xml中，name必须为content，type必须为一个viewModel
      */
-    open fun config(config: Config){
+    open fun config(baseActivityConfig: BaseActivityConfig){
 
     }
 
-    /**
-     * 设置布局
-     */
-    abstract fun setLayout():Int
 }

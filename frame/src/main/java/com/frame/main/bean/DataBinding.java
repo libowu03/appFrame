@@ -7,15 +7,13 @@ import com.frame.main.BR;
 import com.frame.main.viewModel.BaseViewModel;
 
 public class DataBinding extends BaseObservable {
-    private BaseViewModel vm;
+    private BaseViewModel data;
 
-    private void setVm(BaseViewModel vm) {
-        this.vm = vm;
-        notifyPropertyChanged(BR.vm);
+    public DataBinding(BaseViewModel viewModel){
+        this.data = viewModel;
     }
 
-    @Bindable
-    private BaseViewModel getVm(){
-        return vm;
+    private BaseViewModel getViewModel(){
+        return data;
     }
 }
