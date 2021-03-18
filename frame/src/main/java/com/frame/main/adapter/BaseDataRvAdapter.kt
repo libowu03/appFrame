@@ -1,47 +1,70 @@
 package com.frame.main.adapter
 
+import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
-import com.frame.main.databinding.ItemTestBinding
 
 /**
- * recyclerview适配器基类
+ * recyclerview适配器基类，该基类支持dataBinding
  */
-abstract class BaseAdapter<T : ViewBinding, D> :
-    RecyclerView.Adapter<BaseAdapter.BaseViewHolder<T>>() {
+abstract class BaseDataRvAdapter<D> : RecyclerView.Adapter<BaseDataRvAdapter.BaseViewHolder>() {
+    var context: Context? = null
+    var onItemClickCallback: (itemView: View, itemData: D, viewType: Int, position: Int) -> Unit =
+        { itemView, itemData, viewType, position -> }
+    var onItemLongClickCallback: (itemView: View, itemData: D, viewType: Int, position: Int) -> Unit =
+        { itemView, itemData, viewType, position -> }
     private val dataList: MutableList<D> = mutableListOf()
 
-    private var onItemClickCallback: (itemView: View, itemData: D, viewType: Int) -> Unit =
-        { itemView, itemData, viewType -> }
+    class BaseViewHolder(var item: ViewDataBinding, var viewType: Int) :
+        RecyclerView.ViewHolder(item.root) {
 
-    class BaseViewHolder<T : ViewBinding>(var binding: T, var viewType: Int) :
-        RecyclerView.ViewHolder(binding.root) {
     }
+
+    abstract fun onBindViewHolder(holder: BaseViewHolder, position: Int, viewType: Int, item: D)
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): BaseDataRvAdapter.BaseViewHolder {
+        context = parent.context
+        val dataBinding = settingDataBinding(parent, viewType)
+        return BaseViewHolder(dataBinding, viewType)
+    }
+
+    abstract fun settingDataBinding(parent: ViewGroup, viewType: Int): ViewDataBinding
 
     override fun getItemCount(): Int {
         return dataList.size
     }
 
-    override fun onBindViewHolder(holder: BaseViewHolder<T>, position: Int) {
+    override fun onBindViewHolder(holder: BaseDataRvAdapter.BaseViewHolder, position: Int) {
         holder.itemView.setOnClickListener {
-            onItemClickCallback.invoke(holder.itemView, dataList[position], holder.viewType)
+            onItemClickCallback.invoke(
+                holder.itemView,
+                dataList[position],
+                holder.viewType,
+                position
+            )
+        }
+        holder.itemView.setOnLongClickListener {
+            onItemLongClickCallback.invoke(
+                holder.itemView,
+                dataList[position],
+                holder.viewType,
+                position
+            )
+            return@setOnLongClickListener true
         }
         onBindViewHolder(holder, position, holder.viewType, dataList[position])
     }
 
-    abstract fun onBindViewHolder(holder: BaseViewHolder<T>, position: Int, viewType: Int, item: D)
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T> {
-        val binding = bindView(viewType, parent)
-        //DataBindingUtil.bind<ItemTestBinding>(binding.root)
-        return BaseViewHolder(binding, viewType)
+    fun getDataBindingView(layoutId: Int, parent: ViewGroup): ViewDataBinding {
+        return DataBindingUtil.inflate(LayoutInflater.from(context), layoutId, parent, false)
     }
-
-    abstract fun bindView(viewType: Int, parent: ViewGroup): T
 
     /**
      * 根据位置删除数据
@@ -210,6 +233,4 @@ abstract class BaseAdapter<T : ViewBinding, D> :
             return -1
         }
     }
-
-
 }

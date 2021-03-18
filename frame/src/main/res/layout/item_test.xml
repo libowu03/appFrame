@@ -12,6 +12,7 @@
         <ImageView
             android:layout_width="70dp"
             android:layout_height="70dp"
+            android:id="@+id/vImageOne"
             android:background="#000000"/>
     </LinearLayout>
 </layout>

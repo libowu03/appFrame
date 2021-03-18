@@ -18,9 +18,17 @@
         <com.frame.main.widget.BaseTopbarView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:topBarTitle="你好"/>
+            app:topBarTitle="你好" />
 
-        <TextView
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/vRvContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="50"
+            tools:listitem="@layout/item_test" />
+
+        <!--<TextView
             android:id="@+id/vTvTestGet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,7 +43,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@{data.content}" />
+            android:text="@{data.content}" />-->
 
     </LinearLayout>
 </layout>
