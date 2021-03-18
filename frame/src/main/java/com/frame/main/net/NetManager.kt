@@ -24,18 +24,26 @@ object NetManager {
         parameter: HttpParameter? = null,
         header: HeaderParameter? = null
     ) = suspendCoroutine<ResultData<T>> {
-        val response = NetHttp.get<String>(url).put(parameter).header(header).cacheTime(NetConstants.CacheModel.TYPE_ONE_HOUR).enqueue()
+        val response = NetHttp.get<String>(url).put(parameter).header(header)
+            .cacheTime(NetConstants.CacheModel.TYPE_ONE_HOUR).enqueue()
         try {
             val type = object : TypeToken<T>() {}.type
             //如果需要的类型是string类型的，直接输出
-            if (type.toString().equals("class java.lang.String")){
-                it.resume(ResultData<T>((response?.body?.string()?:"") as T))
-            }else{
+            if (type.toString().equals("class java.lang.String")) {
+                it.resume(ResultData<T>((response?.body?.string() ?: "") as T))
+            } else {
                 it.resume(ResultData(Gson().fromJson(response?.body?.charStream(), type)))
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            it.resume(ResultData<T>(null,response?.code?:NET_NO_NET,"网络请求失败",e.localizedMessage))
+            it.resume(
+                ResultData<T>(
+                    null,
+                    response?.code ?: NET_NO_NET,
+                    "网络请求失败",
+                    e.localizedMessage
+                )
+            )
         }
     }
 
@@ -47,18 +55,26 @@ object NetManager {
         parameter: HttpParameter? = null,
         header: HeaderParameter? = null
     ) = suspendCoroutine<ResultData<T>> {
-        val response = NetHttp.post<String>(url).form(parameter).header(header).cacheTime(NetConstants.CacheModel.TYPE_ONE_HOUR).enqueue()
+        val response = NetHttp.post<String>(url).form(parameter).header(header)
+            .cacheTime(NetConstants.CacheModel.TYPE_ONE_HOUR).enqueue()
         try {
             val type = object : TypeToken<T>() {}.type
             //如果需要的类型是string类型的，直接输出
-            if (type.toString().equals("class java.lang.String")){
-                it.resume(ResultData<T>((response?.body?.string()?:"") as T))
-            }else{
+            if (type.toString().equals("class java.lang.String")) {
+                it.resume(ResultData<T>((response?.body?.string() ?: "") as T))
+            } else {
                 it.resume(ResultData(Gson().fromJson(response?.body?.charStream(), type)))
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            it.resume(ResultData<T>(null,response?.code?:NET_NO_NET,"网络请求失败",e.localizedMessage))
+            it.resume(
+                ResultData<T>(
+                    null,
+                    response?.code ?: NET_NO_NET,
+                    "网络请求失败",
+                    e.localizedMessage
+                )
+            )
         }
     }
 

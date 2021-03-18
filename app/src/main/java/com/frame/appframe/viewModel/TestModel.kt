@@ -14,7 +14,8 @@ class TestModel : BaseViewModel() {
 
     fun requestTest() {
         doUILaunch({
-            val a = doIOAsyncAndAwait { NetManager.requestFestival<HashMap<String,String>>() }
+            val a = doIOAsyncAndAwait { NetManager.requestFestival<String>() }
+            content.value = a.data
            /* NetHttp.get<String>("https://gimg2.baidu.com/image_search/src=http%3A%2F%2Finews.gtimg.com%2Fnewsapp_bt%2F0%2F11682904034%2F1000.jpg&refer=http%3A%2F%2Finews.gtimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1613365883&t=7448f538b0620deae5105f55afcd2e1a.jpg")
                 .download(null) {
                     L.i(

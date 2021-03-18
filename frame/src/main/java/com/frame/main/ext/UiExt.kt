@@ -5,43 +5,59 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
 import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
 import android.view.WindowManager
+import android.widget.AutoCompleteTextView
 import androidx.fragment.app.Fragment
 import com.frame.main.constant.Constants
 import com.frame.main.utils.IntentHelper
 
-fun setStatusBarHidden(activity: Activity, isHidden: Boolean) {
+fun setStatusBarHidden(activity: Activity, isHidden: Boolean, isDark: Boolean = true) {
     if (isHidden) {
         val window = activity.window
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            val option = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     // 通知视窗，我们（应用）会处理任何系统视窗（而不是 decor）
                     window.setDecorFitsSystemWindows(false)
-                    window.decorView.windowInsetsController?.setSystemBarsAppearance(
-                        APPEARANCE_LIGHT_STATUS_BARS,
-                        APPEARANCE_LIGHT_STATUS_BARS
-                    )
+                    if (isDark) {
+                        window?.insetsController?.setSystemBarsAppearance(
+                            0,
+                            APPEARANCE_LIGHT_STATUS_BARS
+                        )
+                    } else {
+                        window?.insetsController?.setSystemBarsAppearance(
+                            APPEARANCE_LIGHT_STATUS_BARS,
+                            APPEARANCE_LIGHT_STATUS_BARS
+                        )
+                    }
                 } else {
-                    val vis =
+                    val option =
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    var vis =
                         window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                    window.decorView.systemUiVisibility = option or vis
+                    if (isDark) {
+                        vis = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                    } else {
+                        //非沉浸式
+                        vis = View.SYSTEM_UI_FLAG_VISIBLE;
+                    }
+                    window.decorView.systemUiVisibility = vis or option
                 }
-
             } else {
+                val option =
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 window.decorView.systemUiVisibility = option
             }
             window.statusBarColor = Color.TRANSPARENT
         } else {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         }
-    } else {
-
     }
 }
 
@@ -49,7 +65,7 @@ fun setStatusBarColor(activity: Activity, color: Int) {
     if (color == -1) {
         return
     }
-    setStatusBarHidden(activity, true)
+    //setStatusBarHidden(activity, true)
     val parent = activity.findViewById<View>(android.R.id.content) as ViewGroup
     val statusBarView = parent.findViewWithTag<View>("TAG_STATUS_BAR")
     if (statusBarView != null) {
@@ -109,10 +125,10 @@ fun <T> Activity.getBundleValue(key: String, default: T): T {
 }
 
 /**
-* 跳转到activity
-* @param clazz 类
-* @param flag 调整模式
-* @param requestCode 请求码
+ * 跳转到activity
+ * @param clazz 类
+ * @param flag 调整模式
+ * @param requestCode 请求码
  */
 fun Fragment.sendToActivity(
     context: Context?,

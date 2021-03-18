@@ -14,7 +14,7 @@ import com.frame.main.BaseFragmentConfig
 import java.lang.reflect.ParameterizedType
 
 abstract class BaseFragment<T : ViewBinding> : Fragment() {
-    lateinit var viewBinding: ViewBinding
+    lateinit var viewBinding: T
     private val mConfig = BaseFragmentConfig()
 
     override fun onCreateView(

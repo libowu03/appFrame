@@ -13,8 +13,10 @@ import com.frame.main.ext.setStatusBarColor
 import com.frame.main.ext.setStatusBarHidden
 import java.lang.reflect.ParameterizedType
 
-
-abstract class BaseActivity<T:ViewBinding> : FragmentActivity() {
+/**
+ * activity基类
+ */
+abstract class BaseActivity<T : ViewBinding> : FragmentActivity() {
     protected val viewBinding: T by lazy {
         //使用反射得到viewbinding的class
         val type = javaClass.genericSuperclass as ParameterizedType
@@ -33,7 +35,7 @@ abstract class BaseActivity<T:ViewBinding> : FragmentActivity() {
         binding?.lifecycleOwner = this
         val viewModel = viewModelSetting()
         viewModel?.let {
-            binding?.setVariable(BR.data,viewModel)
+            binding?.setVariable(BR.data, viewModel)
         }
         initView()
         initListener()
@@ -41,7 +43,7 @@ abstract class BaseActivity<T:ViewBinding> : FragmentActivity() {
         initData()
     }
 
-    open fun viewModelSetting():ViewModel?{
+    open fun viewModelSetting(): ViewModel? {
         return null
     }
 
@@ -70,19 +72,14 @@ abstract class BaseActivity<T:ViewBinding> : FragmentActivity() {
      * 设置基础配置数据
      */
     private fun initConfig() {
-        if (mConfig.isHiddenStatusBar){
-            setStatusBarHidden(this,mConfig.isHiddenStatusBar)
-        }
-        if (mConfig.statusBarColor != -1){
-            setStatusBarColor(this,mConfig.statusBarColor)
-        }
+        setStatusBarHidden(this, mConfig.isHiddenStatusBar,mConfig.isDarkStatusBarText)
     }
 
     /**
      * 配置基础信息,如果需要打开DataBinding，这里必须设置一个viewModel
      * 在xml中，name必须为content，type必须为一个viewModel
      */
-    open fun config(baseActivityConfig: BaseActivityConfig){
+    open fun config(baseActivityConfig: BaseActivityConfig) {
 
     }
 

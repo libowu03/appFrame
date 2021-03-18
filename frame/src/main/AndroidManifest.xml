@@ -3,7 +3,7 @@
     package="com.frame.main">
 
     <application>
-        <activity android:name=".activity.BaseActivity"></activity>
+        <activity android:name=".activity.BaseActivity" android:theme="@style/Theme.AppFrame"></activity>
     </application>
 
 </manifest>
