@@ -14,9 +14,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     override fun initData() {
         viewBinding.vTvTestGet.setOnClickListener {
             //测试get请求
-            //testModel.requestTest()
-            val dialog = TestDialog()
-            dialog.show(supportFragmentManager,"")
+            testModel.requestTest()
+            /*val dialog = TestDialog()
+            dialog.show(supportFragmentManager,"")*/
         }
     }
 
