@@ -1,24 +1,28 @@
 package com.frame.appframe.adapter
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.viewbinding.ViewBinding
-import com.frame.main.adapter.BaseRvAdapter
+import androidx.databinding.ViewDataBinding
+import com.frame.appframe.R
+import com.frame.main.adapter.BaseDataRvAdapter
 import com.frame.main.databinding.ItemTestBinding
 
-class TestAdapter : BaseRvAdapter<String>() {
+/**
+ *
+ */
+class TestAdapter : BaseDataRvAdapter<String>() {
+    override fun settingDataBinding(parent: ViewGroup, viewType: Int): ViewDataBinding {
+        return getDataBindingView(R.layout.item_test,parent)
+    }
 
     override fun onBindViewHolder(
         holder: BaseViewHolder,
         position: Int,
         viewType: Int,
-        item: String
+        item: String?
     ) {
-
-    }
-
-    override fun bindView(viewType: Int, parent: ViewGroup): ViewBinding {
-        return ItemTestBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        (holder.item as ItemTestBinding).apply {
+            bean = item
+        }
     }
 
 }

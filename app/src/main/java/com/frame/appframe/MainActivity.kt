@@ -13,20 +13,15 @@ import com.frame.main.widget.EmptyAndLoadView
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
     private val testModel: TestModel by viewModels()
-    private val mAdapter = TestAdapter()
 
     override fun initData() {
-        val list = mutableListOf<String>()
-        for (item in 0..50) {
-            list.add("")
+        viewBinding.vBtnOpen.setOnClickListener {
+            testModel.showLoadingDialog(this)
         }
-        mAdapter.addItedataList(list)
-        mAdapter.onItemClickCallback = { itemView, itemData, viewType, position ->
-            sendToActivity(TestTwoActivity::class.java).put("test", "你好呀").put("test2", 10).go()
+        viewBinding.vBtnClose.setOnClickListener {
+            testModel.hideLoadingDialog()
         }
-        viewBinding.vRvContent.adapter = mAdapter
-
-        viewBinding.vEmpty.onLoading()
+        testModel.requestTest(this)
         viewBinding.vEmpty.onCenterImageClick {
             when (it) {
                 EmptyAndLoadView.EmptyAndLoadingType.TYPE_FAIL -> {

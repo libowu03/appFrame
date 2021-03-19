@@ -21,7 +21,7 @@ class EmptyAndLoadView : LinearLayout {
     private var mViewBind: BaseViewEmptyAndLoaddingBinding? = null
     private var mCurrentStatus = EmptyAndLoadingType.TYPE_LOADING
     private var mClickListener: (type: EmptyAndLoadingType) -> Unit = {}
-    private var mOnStatusChange:(type: EmptyAndLoadingType) -> Unit = {}
+    private var mOnStatusChange: (type: EmptyAndLoadingType) -> Unit = {}
 
     constructor(context: Context) : this(context, null)
 
@@ -136,30 +136,18 @@ class EmptyAndLoadView : LinearLayout {
     }
 
     companion object {
-        //加载失败
-        const val EMPTY_FAIL = -1
-
-        //加载中
-        const val EMPTY_LOADING = 0
-
-        //数据为空
-        const val EMPTY_NONE = 1
-
-        //正常加载且存在数据
-        const val EMPTY_SUCCESS = 2
-
         /**
          * 添加数据源
          * @param status 显示状态
          */
         @BindingAdapter("changeStatus")
         @JvmStatic
-        fun EmptyAndLoadView.changeStatus(status: Int) {
+        fun EmptyAndLoadView.changeStatus(status: EmptyAndLoadingType) {
             when (status) {
-                EMPTY_FAIL -> this.onLoadFail()
-                EMPTY_LOADING -> this.onLoading()
-                EMPTY_NONE -> this.onLoadEmpty()
-                EMPTY_SUCCESS -> this.onLoadNormal()
+                EmptyAndLoadingType.TYPE_FAIL -> this.onLoadFail()
+                EmptyAndLoadingType.TYPE_LOADING -> this.onLoading()
+                EmptyAndLoadingType.TYPE_EMPTY -> this.onLoadEmpty()
+                EmptyAndLoadingType.TYPE_SUCCESS -> this.onLoadNormal()
             }
         }
     }

@@ -1,26 +1,38 @@
 package com.frame.main.adapter
 
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 
 /**
- * recyclerview适配器基类，该基类不支持dataBinding
- * 如果需要支持dataBinding的适配器，可以使用com.frame.main.adapter.BaseDataRvAdapter
+ * recyclerview的基础适配器 不支持viewDataBinding
+ * 这个适合列表中只有一个类型显示的情况。如果列表中存在多个布局，且不需要viewDataBinding，请使用BaseRvAdapter
  */
-abstract class BaseRvAdapter<D> :
-    BaseRecyclerViewAdapter<D,BaseRvAdapter.BaseViewHolder>() {
+abstract class BaseSigleRvAdapter<T : ViewBinding, D> :
+    BaseRecyclerViewAdapter<D,BaseSigleRvAdapter.BaseHolder>() {
 
-    class BaseViewHolder(var binding: ViewBinding, var viewType: Int) :
+    class BaseHolder(var binding: ViewBinding, var viewType: Int) :
         RecyclerView.ViewHolder(binding.root) {
+
     }
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): BaseSigleRvAdapter.BaseHolder {
+        return BaseHolder(bindView(), viewType)
+    }
+
+    abstract fun bindView(): T
 
     override fun getItemCount(): Int {
         return dataList.size
     }
 
-    override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BaseSigleRvAdapter.BaseHolder, position: Int) {
         holder.itemView.setOnClickListener {
             onItemClickCallback.invoke(
                 holder.itemView,
@@ -41,12 +53,11 @@ abstract class BaseRvAdapter<D> :
         onBindViewHolder(holder, position, holder.viewType, dataList[position])
     }
 
-    abstract fun onBindViewHolder(holder: BaseViewHolder, position: Int, viewType: Int, item: D?)
+    abstract fun onBindViewHolder(
+        holder: BaseHolder,
+        position: Int,
+        viewType: Int,
+        any: D?
+    )
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
-        val binding = bindView(viewType, parent)
-        return BaseViewHolder(binding, viewType)
-    }
-
-    abstract fun bindView(viewType: Int, parent: ViewGroup): ViewBinding
 }

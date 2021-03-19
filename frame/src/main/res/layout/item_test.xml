@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+    <data>
+        <variable
+            name="bean"
+            type="String" />
+    </data>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="#909090"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingStart="20dp"
@@ -14,5 +18,9 @@
             android:layout_height="70dp"
             android:id="@+id/vImageOne"
             android:background="#000000"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{bean}"/>
     </LinearLayout>
 </layout>

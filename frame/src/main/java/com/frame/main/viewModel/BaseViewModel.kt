@@ -1,8 +1,12 @@
 package com.frame.main.viewModel
 
+import android.app.Activity
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.base.net_lib.log.L
 import com.frame.main.bean.ResultData
+import com.frame.main.dialog.LoaddingDialog
 import kotlinx.coroutines.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -10,6 +14,7 @@ import kotlin.coroutines.suspendCoroutine
 open class BaseViewModel : ViewModel() {
     private val jod = SupervisorJob()
     private val uiScope = CoroutineScope(Dispatchers.Main+jod)
+    private val loadingDialog = LoaddingDialog()
 
     init {
         viewModelScope.launch {
@@ -67,6 +72,23 @@ open class BaseViewModel : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         jod.cancel()
+    }
+
+    /**
+     * 显示弹窗
+     */
+    fun showLoadingDialog(activity:FragmentActivity?){
+        L.i("日志","执行显示")
+        activity?.let {
+            if (loadingDialog.isAdded){
+                return
+            }
+            loadingDialog.show(activity.supportFragmentManager,activity::class.java.name)
+        }
+    }
+
+    fun hideLoadingDialog(){
+        loadingDialog.dismiss()
     }
 
 

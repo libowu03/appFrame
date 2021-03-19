@@ -20,8 +20,25 @@
             android:layout_height="wrap_content"
             app:topBarTitle="你好" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="开启弹窗"
+                android:id="@+id/vBtnOpen"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="关闭弹窗"
+                android:id="@+id/vBtnClose"/>
+        </LinearLayout>
+
         <com.frame.main.widget.EmptyAndLoadView
             android:id="@+id/vEmpty"
+            changeStatus="@{data.status}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tipMarginTop="100dp">
@@ -33,6 +50,8 @@
                 android:visibility="gone"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:itemCount="50"
+                setList="@{data.content}"
+                adapter="@{data.adapter}"
                 tools:listitem="@layout/item_test" />
         </com.frame.main.widget.EmptyAndLoadView>
 
