@@ -14,6 +14,8 @@ import android.view.WindowManager
 import android.widget.AutoCompleteTextView
 import androidx.fragment.app.Fragment
 import com.frame.main.constant.Constants
+import com.frame.main.constant.Constants.IntentValue.ARGUMENTS_KEY
+import com.frame.main.constant.Constants.IntentValue.INTENT_KEY
 import com.frame.main.utils.IntentHelper
 
 fun setStatusBarHidden(activity: Activity, isHidden: Boolean, isDark: Boolean = true) {
@@ -96,12 +98,25 @@ fun getStatusBarHeightExt(): Int {
  * @param requestCode 请求码
  */
 fun Activity.sendToActivity(
-    context: Context?,
     clazz: Class<*>,
     flag: Int = -1,
     requestCode: Int = -1
 ): IntentHelper.IntentBuilder {
-    return IntentHelper.sendToActivity(context, clazz, flag, requestCode)
+    return IntentHelper.sendToActivity(this, clazz, flag, requestCode)
+}
+
+/**
+ * 跳转到activity
+ * @param clazz 类
+ * @param flag 调整模式
+ * @param requestCode 请求码
+ */
+fun Context.sendToActivity(
+    clazz: Class<*>,
+    flag: Int = -1,
+    requestCode: Int = -1
+): IntentHelper.IntentBuilder {
+    return IntentHelper.sendToActivity(this, clazz, flag, requestCode)
 }
 
 /**
@@ -111,12 +126,25 @@ fun Activity.sendToActivity(
  * @param requestCode 请求码
  */
 fun Activity.sendToActivity(
-    context: Context?,
     clzzName: String,
     flag: Int = -1,
     requestCode: Int = -1
 ): IntentHelper.IntentBuilder {
-    return IntentHelper.sendToActivity(context, clzzName, flag, requestCode)
+    return IntentHelper.sendToActivity(this, clzzName, flag, requestCode)
+}
+
+/**
+ * 跳转到activity
+ * @param clzzName 类名
+ * @param flag 调整模式
+ * @param requestCode 请求码
+ */
+fun Context.sendToActivity(
+    clzzName: String,
+    flag: Int = -1,
+    requestCode: Int = -1
+): IntentHelper.IntentBuilder {
+    return IntentHelper.sendToActivity(this, clzzName, flag, requestCode)
 }
 
 fun <T> Activity.getBundleValue(key: String, default: T): T {
@@ -153,6 +181,37 @@ fun Fragment.sendToActivity(
 ): IntentHelper.IntentBuilder {
     return IntentHelper.sendToActivity(context, clzzName, flag, requestCode)
 }
+
+/**
+ * 获取activity
+ */
+fun <T> Activity.getValue(key: String, value: T): T {
+    val bundle = this.intent.getBundleExtra(INTENT_KEY)
+    bundle?.let {
+        return IntentHelper.get(bundle, key, value)
+    } ?: let {
+        return value
+    }
+}
+
+fun <T> Fragment.getValue(key: String, value: T): T? {
+    val bundle = this.activity?.intent?.getBundleExtra(INTENT_KEY)
+    bundle?.let {
+        return IntentHelper.get(bundle, key, value)
+    } ?: let {
+        return null
+    }
+}
+
+fun <T> Fragment.getArgumentsValue(key: String, value: T): T? {
+    val bundle = this.arguments?.getBundle(ARGUMENTS_KEY)
+    bundle?.let {
+        return IntentHelper.get(bundle, key, value)
+    } ?: let {
+        return null
+    }
+}
+
 
 //region 像素转换
 fun dp2px(dpValue: Float): Int {

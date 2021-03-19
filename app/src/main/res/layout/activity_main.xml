@@ -20,13 +20,21 @@
             android:layout_height="wrap_content"
             app:topBarTitle="你好" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/vRvContent"
+        <com.frame.main.widget.EmptyAndLoadView
+            android:id="@+id/vEmpty"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:itemCount="50"
-            tools:listitem="@layout/item_test" />
+            android:layout_height="wrap_content"
+            app:tipMarginTop="100dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/vRvContent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="50"
+                tools:listitem="@layout/item_test" />
+        </com.frame.main.widget.EmptyAndLoadView>
 
         <!--<TextView
             android:id="@+id/vTvTestGet"

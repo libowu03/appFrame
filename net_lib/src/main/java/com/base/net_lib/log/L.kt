@@ -35,31 +35,31 @@ object L {
      *
      * @param content
      */
-    fun w(content: String) {
+    fun w(content: String?) {
         if (isDebug) {
             log(TAG, content, Log.WARN)
         }
     }
 
-    fun w(tag: String, content: String) {
+    fun w(tag: String, content: String?) {
         if (isDebug) {
             log(tag, content, Log.WARN)
         }
     }
 
-    fun e(content: String) {
+    fun e(content: String?) {
         if (isDebug) {
             log(TAG, content, Log.ERROR)
         }
     }
 
-    fun e(tag: String, content: String) {
+    fun e(tag: String, content: String?) {
         if (isDebug) {
             log(tag, content, Log.ERROR)
         }
     }
 
-    fun i(content: String) {
+    fun i(content: String?) {
         if (isDebug) {
             log(TAG, content, Log.INFO)
         }
@@ -71,25 +71,25 @@ object L {
         }
     }
 
-    fun v(content: String) {
+    fun v(content: String?) {
         if (isDebug) {
             log(TAG, content, Log.VERBOSE)
         }
     }
 
-    fun v(tag: String, content: String) {
+    fun v(tag: String, content: String?) {
         if (isDebug) {
             log(tag, content, Log.VERBOSE)
         }
     }
 
-    fun d(content: String) {
+    fun d(content: String?) {
         if (isDebug) {
             log(TAG, content, Log.DEBUG)
         }
     }
 
-    fun d(tag: String, content: String) {
+    fun d(tag: String, content: String?) {
         if (isDebug) {
             log(tag, content, Log.DEBUG)
         }

@@ -7,6 +7,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.viewbinding.ViewBinding
+import com.base.net_lib.log.L
 import com.frame.main.BR
 import com.frame.main.BaseActivityConfig
 import com.frame.main.ext.setStatusBarColor
@@ -31,11 +32,15 @@ abstract class BaseActivity<T : ViewBinding> : FragmentActivity() {
         config(mConfig)
         initConfig()
         setContentView(viewBinding.root)
-        val binding = DataBindingUtil.bind<ViewDataBinding>(viewBinding.root)
-        binding?.lifecycleOwner = this
-        val viewModel = viewModelSetting()
-        viewModel?.let {
-            binding?.setVariable(BR.data, viewModel)
+        try{
+            val binding = DataBindingUtil.bind<ViewDataBinding>(viewBinding.root)
+            binding?.lifecycleOwner = this
+            val viewModel = viewModelSetting()
+            viewModel?.let {
+                binding?.setVariable(BR.data, viewModel)
+            }
+        }catch (e:Exception){
+            L.e(e.message)
         }
         initView()
         initListener()
@@ -50,7 +55,9 @@ abstract class BaseActivity<T : ViewBinding> : FragmentActivity() {
     /**
      * 初始化网络数据等数据请求
      */
-    abstract fun initData()
+    open fun initData(){
+
+    }
 
     /**
      * 适配器的初始化

@@ -20,4 +20,11 @@
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
     </style>
 
+    <declare-styleable name="EmptyAndLoadView">
+        <!--刚开始隐藏，只有到调用相应方法时才触发显示-->
+        <attr name="tipFirstGone" format="boolean"/>
+        <!--提示信息距离顶部距离-->
+        <attr name="tipMarginTop" format="dimension"/>
+    </declare-styleable>
+
 </resources>

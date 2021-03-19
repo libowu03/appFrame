@@ -7,6 +7,7 @@ object Constants {
      */
     object IntentValue {
         const val INTENT_KEY = "intentValueKey"
+        const val ARGUMENTS_KEY = "ArgumentsValueKey"
     }
 
 }

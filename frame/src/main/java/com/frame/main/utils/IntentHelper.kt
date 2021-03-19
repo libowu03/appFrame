@@ -13,6 +13,8 @@ import java.lang.reflect.Array
 
 
 object IntentHelper {
+    private var preOpenTime: Long = 0
+    private var preOpenName: String? = null
 
     fun sendToActivity(
         context: Context?,
@@ -193,12 +195,27 @@ object IntentHelper {
          * 执行跳转
          */
         fun go() {
-            if (mRequestCode != -1) {
-                if (context is Activity) {
-                    (context as Activity).startActivityForResult(sendToActivity, mRequestCode)
+            try {
+                //加入短时间内触发多次跳转，且触发跳转的目标activity和上一次跳转的目标activity一致，则不进行执行
+                if (System.currentTimeMillis() - preOpenTime < 300 && preOpenName != null && (preOpenName == mClazz?.name || preOpenName == mclazzName)) {
+                    return
                 }
-            } else {
-                context?.startActivity(sendToActivity)
+                //Log.e("日志","执行跳转")
+                preOpenTime = System.currentTimeMillis()
+                if (mClazz != null) {
+                    preOpenName = mClazz?.name ?: ""
+                } else {
+                    preOpenName = mclazzName ?: ""
+                }
+                if (mRequestCode != -1) {
+                    if (context is Activity) {
+                        (context as Activity).startActivityForResult(sendToActivity, mRequestCode)
+                    }
+                } else {
+                    context?.startActivity(sendToActivity)
+                }
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
             }
         }
     }

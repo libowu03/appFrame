@@ -148,8 +148,3 @@ fun TextView.htmlToStr(str:String?){
         this.text = Html.fromHtml(str)
     }
 }
-
-@BindingAdapter("visibleByBool")
-fun rvListChange(list:MutableList<Any>){
-
-}

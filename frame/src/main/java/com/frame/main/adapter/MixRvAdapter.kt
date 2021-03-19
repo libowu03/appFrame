@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
+/*
 class MixRvAdapter : RecyclerView.Adapter<MixRvAdapter.BaseMixViewHolder>() {
 
     class BaseMixViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView){
@@ -28,4 +29,4 @@ class MixRvAdapter : RecyclerView.Adapter<MixRvAdapter.BaseMixViewHolder>() {
     fun register():MixRvAdapter{
         return this
     }
-}
+}*/
